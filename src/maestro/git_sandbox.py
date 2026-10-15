@@ -9,6 +9,21 @@ from pathlib import Path
 class GitSandbox:
     def __init__(self, repository_root: str | Path) -> None:
         self.repository_root = Path(repository_root).resolve()
+        self._ensure_exclude()
+
+    def _ensure_exclude(self) -> None:
+        """Garante que .maestro_state seja ignorado pelo Git sem modificar o .gitignore do projeto."""
+        git_dir = self.repository_root / ".git"
+        if git_dir.is_dir():
+            exclude_file = git_dir / "info" / "exclude"
+            try:
+                exclude_file.parent.mkdir(parents=True, exist_ok=True)
+                content = exclude_file.read_text(encoding="utf-8") if exclude_file.exists() else ""
+                if ".maestro_state" not in content:
+                    with open(exclude_file, "a", encoding="utf-8") as f:
+                        f.write("\n.maestro_state/\n")
+            except Exception:
+                pass
 
     def _git(self, *arguments: str, check: bool = True) -> str:
         result = subprocess.run(
@@ -36,6 +51,7 @@ class GitSandbox:
     def checkout_or_create_branch(self, branch: str) -> None:
         if not branch.strip():
             raise ValueError("branch must not be empty")
+        self._ensure_exclude()
         # Se o repositório não tem commits, garante ao menos um commit inicial
         if not self.has_head():
             self._git("add", "-A", check=False)
@@ -48,6 +64,7 @@ class GitSandbox:
             self._git("checkout", "-B", branch, check=False)
 
     def is_clean(self) -> bool:
+        self._ensure_exclude()
         return not self._git("status", "--porcelain", check=False).strip()
 
     def get_diff(self) -> str:
@@ -77,4 +94,4 @@ class GitSandbox:
     def rollback_hard(self) -> None:
         if self.has_head():
             self._git("reset", "--hard", "HEAD", check=False)
-        self._git("clean", "-fd", check=False)
+        self._git("clean", "-fd", "-e", ".maestro_state", check=False)

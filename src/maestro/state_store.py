@@ -18,6 +18,7 @@ class StateStore:
         self.init_db()
 
     def _connect(self) -> sqlite3.Connection:
+        self.database_path.parent.mkdir(parents=True, exist_ok=True)
         connection = sqlite3.connect(self.database_path)
         connection.row_factory = sqlite3.Row
         return connection
