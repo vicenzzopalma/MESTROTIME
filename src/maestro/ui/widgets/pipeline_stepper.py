@@ -1,4 +1,5 @@
 from textual.widgets import Static
+import time
 
 
 class PipelineStepper(Static):
@@ -9,23 +10,27 @@ class PipelineStepper(Static):
         self.started = 0.0
         self.completed: set[str] = set()
         self.failed: set[str] = set()
-        super().__init__(id="pipeline-stepper")
-        self.refresh_view()
+        super().__init__(self._build_text(), id="pipeline-stepper")
 
     def set_state(self, state: str) -> None:
-        import time
         if self.current and self.current != state:
             self.completed.add(self.current)
         self.current, self.started = state, time.monotonic()
         if state in self.completed:
             self.completed.remove(state)
-        self.refresh_view()
+        self.update(self._build_text())
 
-    def refresh_view(self) -> None:
-        import time
+    def _build_text(self) -> str:
         lines = ["[bold]PIPELINE[/]"]
         for step in self.STEPS:
-            icon = "[✔]" if step in self.completed else "[⏳]" if step == self.current else "[✖]" if step in self.failed else "[ ]"
-            elapsed = f"  {int(time.monotonic()-self.started)}s" if step == self.current else ""
+            if step in self.completed:
+                icon = "[green][OK][/]"
+            elif step == self.current:
+                icon = "[cyan][>>][/]"
+            elif step in self.failed:
+                icon = "[red][ X][/]"
+            else:
+                icon = "[dim][  ][/]"
+            elapsed = f"  {int(time.monotonic()-self.started)}s" if step == self.current and self.started > 0 else ""
             lines.append(f"{icon} {step.replace('_', ' ').title()}{elapsed}")
-        self.update("\n".join(lines))
+        return "\n".join(lines)
