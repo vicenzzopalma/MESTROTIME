@@ -17,10 +17,11 @@ app = typer.Typer(help="Chronos Maestro autonomous engineering orchestrator.")
 
 
 def parse_duration(value: str) -> int:
-    match = re.fullmatch(r"\s*(\d+)\s*([mh])\s*", value, flags=re.I)
+    match = re.fullmatch(r"\s*(\d+)\s*([mh])?\s*", value, flags=re.I)
     if not match or int(match.group(1)) <= 0:
-        raise typer.BadParameter("duration must look like 60m, 2h, or 45m")
-    multiplier = 3600 if match.group(2).lower() == "h" else 60
+        raise typer.BadParameter("duration must look like 60m, 2h, 45m, or just numbers in minutes (e.g. 90 or 420)")
+    unit = (match.group(2) or "m").lower()
+    multiplier = 3600 if unit == "h" else 60
     return int(match.group(1)) * multiplier
 
 
