@@ -160,7 +160,7 @@ class MaestroOrchestrator:
             await self._set_state(FSMState.PRE_CHECK)
             if not self.repository_root.is_dir():
                 raise RuntimeError(f"Repository does not exist: {self.repository_root}")
-            await self.git.checkout_or_create_branch(self.branch)
+            await asyncio.to_thread(self.git.checkout_or_create_branch, self.branch)
             clean = await asyncio.to_thread(self.git.is_clean)
             if not clean:
                 raise RuntimeError("Working tree is not clean; refusing to overwrite uncommitted changes")

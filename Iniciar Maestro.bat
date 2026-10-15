@@ -42,6 +42,7 @@ if not exist "%TARGET_REPO%\.git" (
     echo.
     echo [*] Inicializando repositorio Git no projeto...
     git -C "%TARGET_REPO%" init
+    git -C "%TARGET_REPO%" commit --allow-empty -m "chore: initialize repository"
 )
 
 echo.
