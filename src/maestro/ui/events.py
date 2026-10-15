@@ -37,3 +37,11 @@ class CycleCompleted(Message):
     def __init__(self, cycle_record: CycleRecord) -> None:
         super().__init__()
         self.cycle_record = cycle_record
+
+
+class TimerUpdated(Message):
+    def __init__(self, remaining_seconds: int, duration_seconds: int, paused: bool) -> None:
+        super().__init__()
+        self.remaining_seconds = remaining_seconds
+        self.duration_seconds = duration_seconds
+        self.paused = paused

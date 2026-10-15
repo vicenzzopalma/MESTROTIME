@@ -1,0 +1,26 @@
+Screen {
+    layout: grid;
+    grid-size: 2 3;
+    grid-columns: 38% 62%;
+    grid-rows: 3 1fr 3;
+    grid-gutter: 1 1;
+    padding: 0 1;
+    background: #101820;
+    color: #e7edf2;
+}
+HeaderHud { column-span: 2; height: 3; border: round #2d5368; background: #152530; }
+#pipeline-stepper { height: 13; border: round #255269; padding: 1; }
+#target-card { height: 1fr; min-height: 10; border: round #255269; padding: 1; overflow-y: auto; }
+#cycle-table { height: 12; border: round #255269; }
+StreamTabs { height: 1fr; border: round #255269; }
+StatsBar { column-span: 2; height: 3; border: round #2d5368; padding: 0 1; content-align: left middle; }
+.timer-normal { color: #00d7ff; }
+.timer-warning { color: #ffd75f; }
+.timer-critical { color: #ff5555; text-style: bold; }
+ModalScreen { align: center middle; background: #000000 65%; }
+#intervention-dialog, #cycle-detail-dialog { width: 76; max-width: 92%; height: auto; max-height: 90%; border: heavy #00a6cc; background: #14222c; padding: 1 2; }
+#intervention-dialog TextArea { height: 8; border: round #456273; }
+#cycle-detail-dialog { width: 100; }
+.prompt-view { height: 5; overflow-y: auto; border: round #456273; padding: 0 1; }
+.modal-title { text-style: bold; color: #00d7ff; margin-bottom: 1; }
+Button { margin: 1 1 0 0; }
